@@ -1,0 +1,20 @@
+@import '../utils/variables';
+
+.stopwatch {
+  width: 300px;
+  margin: 50px auto;
+  &-screen {
+    text-align: center;
+    font-size: 25px;
+    color: $blue-1;
+    margin-top: 15px;
+  }
+  &-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    .hawk-button {
+      margin: 0 10px;
+    }
+  }
+}
