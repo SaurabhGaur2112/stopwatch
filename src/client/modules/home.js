@@ -1,6 +1,8 @@
 // vendor modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// react components
+import Navbar from '../components/globals/Navbar';
 
 class Home extends Component {
   static propTypes = {
@@ -11,13 +13,19 @@ class Home extends Component {
     ]),
   };
 
-  state = {};
+  state = {
+    title: 'Stopwatch',
+  };
 
   render() {
     const { children } = this.props;
+    const { title } = this.state;
 
     return (
       <div className="home">
+        <Navbar
+          title={title}
+        />
         {children}
       </div>
     );
