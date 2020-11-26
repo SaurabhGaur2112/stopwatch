@@ -1,57 +1,55 @@
 // vendor modules
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 // react modules
 import Button from '@hawk-ui/button';
 
-let interval;
 function Stopwatch() {
   const [watchState, setWatchState] = useState({
-    timePassed: 0,
-    milliSeconds: '00',
-    seconds: '00',
-    minutes: '00',
+    running: false,
+    times: [0, 0, 0],
+    time: performance.now(),
     isStarted: false,
   });
 
-  const formatter = (input) => {
-    const time = input.toString();
+  const requestRef = useRef();
 
-    return time.length < 2 ? `0${time}` : time.slice(-2);
+  const pad0 = (value, count) => {
+    let result = value.toString();
+    for (; result.length < count; --count) {
+      result = `0${result}`;
+    }
+    return result;
   };
 
-  const formatTime = () => {
-    setWatchState({
-      // ...watchState,
-      milliSeconds: formatter(watchState.timePassed),
-      seconds: formatter(Math.floor((watchState.timePassed / 100) % 60)),
-      minutes: formatter(Math.floor((watchState.timePassed / (100 * 60)) % 60)),
-    });
-    console.log('query watchState', watchState);
-    console.log('query formatter', formatter(watchState.timePassed));
+  const formatter = (times) => {
+    return `${pad0(times[0], 2)}:${pad0(times[1], 2)}:${pad0(Math.floor(times[2]), 2)}`;
   };
 
-  const timeNow = () => {
-    const seconds = parseInt(watchState.timePassed, 10) + 1;
-    console.log('query timeNow', seconds);
-    setWatchState({
-      // ...watchState,
-      timePassed: seconds,
-    });
-    formatTime();
+  const step = (timestamp) => {
+    if (!watchState.running) {
+      return;
+    }
+    console.log('query timestamp', timestamp);
   };
 
   const startTime = () => {
-    if (watchState.isStarted) {
-      return;
+    if (!watchState.running) {
+      setWatchState({
+        running: true,
+      });
+      requestAnimationFrame(step(this));
     }
-    setWatchState({
-      timePassed: 0,
-      milliSeconds: '00',
-      seconds: '00',
-      minutes: '00',
-      isStarted: true,
-    });
-    interval = setInterval(timeNow(), 10);
+    console.log('query time', watchState.time);
+    // if (!watchState.isStarted) {
+    //   return;
+    // }
+    // setWatchState({
+    //   timePassed: 0,
+    //   milliSeconds: '00',
+    //   seconds: '00',
+    //   minutes: '00',
+    //   isStarted: true,
+    // });
   };
 
   const stopTime = () => {
@@ -61,6 +59,7 @@ function Stopwatch() {
     });
   };
 
+  console.log('query times', formatter(watchState.times));
   return (
     <div className="stopwatch">
       <div className="stopwatch-screen">
