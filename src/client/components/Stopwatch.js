@@ -1,75 +1,39 @@
 // vendor modules
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 // react modules
 import Button from '@hawk-ui/button';
 
 function Stopwatch() {
-  const [watchState, setWatchState] = useState({
-    running: false,
-    times: [0, 0, 0],
-    time: performance.now(),
-    isStarted: false,
-  });
+  const [count, setCount] = useState(0);
 
   const requestRef = useRef();
+  const previousTimeRef = useRef();
 
-  const pad0 = (value, count) => {
-    let result = value.toString();
-    for (; result.length < count; --count) {
-      result = `0${result}`;
+  const animate = (time) => {
+    if (previousTimeRef.current !== undefined) {
+      const deltaTime = time - previousTimeRef.current;
+
+      setCount(prevCount => (prevCount + deltaTime * 0.01) % 100);
     }
-    return result;
+    previousTimeRef.current = time;
+    requestRef.current = requestAnimationFrame(animate);
   };
 
-  const formatter = (times) => {
-    return `${pad0(times[0], 2)}:${pad0(times[1], 2)}:${pad0(Math.floor(times[2]), 2)}`;
-  };
+  useEffect(() => {
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, []);
 
-  const step = (timestamp) => {
-    if (!watchState.running) {
-      return;
-    }
-    console.log('query timestamp', timestamp);
-  };
-
-  const startTime = () => {
-    if (!watchState.running) {
-      setWatchState({
-        running: true,
-      });
-      requestAnimationFrame(step(this));
-    }
-    console.log('query time', watchState.time);
-    // if (!watchState.isStarted) {
-    //   return;
-    // }
-    // setWatchState({
-    //   timePassed: 0,
-    //   milliSeconds: '00',
-    //   seconds: '00',
-    //   minutes: '00',
-    //   isStarted: true,
-    // });
-  };
-
-  const stopTime = () => {
-    window.clearInterval(interval);
-    setWatchState({
-      isStarted: false,
-    });
-  };
-
-  console.log('query times', formatter(watchState.times));
   return (
     <div className="stopwatch">
       <div className="stopwatch-screen">
-        {watchState.minutes}
-        {' - '}
+        {Math.round(count)}
+        {/* {' - '}
         {watchState.seconds}
         {' - '}
-        {watchState.milliSeconds}
+        {watchState.milliSeconds} */}
       </div>
-      <div className="stopwatch-button">
+      {/* <div className="stopwatch-button">
         <Button
           onClick={() => { startTime(); }}
         >
@@ -81,7 +45,7 @@ function Stopwatch() {
           Stop
         </Button>
         <Button>Reset</Button>
-      </div>
+      </div> */}
     </div>
   );
 }
