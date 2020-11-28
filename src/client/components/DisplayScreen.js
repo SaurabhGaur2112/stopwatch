@@ -15,18 +15,15 @@ export default function DisplayScreen(props) {
   return (
     <div className="display-screen">
       {h()}
-      &nbsp;&nbsp;
-      <span>
+      <div>
         {(time.m >= 10) ? time.m : `0${time.m}`}
-      </span>
-      &nbsp;&nbsp;
-      <span>
+      </div>
+      <div>
         {(time.s >= 10) ? time.s : `0${time.s}`}
-      </span>
-      &nbsp;&nbsp;
-      <span>
+      </div>
+      <div>
         {(time.ms >= 10) ? time.ms : `0${time.ms}`}
-      </span>
+      </div>
     </div>
   );
 }

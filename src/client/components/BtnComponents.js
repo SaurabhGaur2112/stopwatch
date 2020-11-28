@@ -12,27 +12,31 @@ export default function BtnComponents(props) {
       {status === 0 && (
         <Button
           onClick={() => { start(); }}
+          className="btn-start"
         >
           Start
         </Button>
       )}
-      {status === 1 ? (
-        <Button
-          onClick={() => { stop(); }}
-        >
-          Stop
-        </Button>
-      ) : (
-        <Button
-          onClick={() => { reset(); }}
-        >
-          Reset
-        </Button>
+      {status === 1 && (
+        <>
+          <Button
+            onClick={() => { stop(); }}
+            className="btn-stop"
+          >
+            Stop
+          </Button>
+          <Button
+            onClick={() => { reset(); }}
+          >
+            Reset
+          </Button>
+        </>
       )}
       {status === 2 && (
         <>
           <Button
             onClick={() => { resume(); }}
+            className="btn-start"
           >
             Resume
           </Button>

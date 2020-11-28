@@ -1,0 +1,21 @@
+@import '../utils/variables';
+
+.display-screen {
+  display: flex;
+  justify-content: center;
+  div {
+    height: 50px;
+    width: 50px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $brand;
+    color: $white;
+    margin-left: 20px;
+    border-radius: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
