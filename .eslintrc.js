@@ -48,6 +48,7 @@ module.exports = {
         "max-classes-per-file": 'off',
         "no-nested-ternary": 'off',
         "react/sort-comp": 'off',
+        "no-plusplus": 'off',
         "indent": [
             "error",
             2

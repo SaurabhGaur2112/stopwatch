@@ -1,53 +1,67 @@
 // vendor modules
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 // react modules
-import Button from '@hawk-ui/button';
+import DisplayScreen from './DisplayScreen';
+import BtnComponents from './BtnComponents';
 
-function Stopwatch() {
-  const [count, setCount] = useState(0);
+export default function Stopwatch() {
+  const [time, setTime] = useState({ ms: 0, s: 0, m: 0, h: 0 });
+  const [interv, setInterv] = useState();
+  const [status, setStatus] = useState(0);
 
-  const requestRef = useRef();
-  const previousTimeRef = useRef();
+  let updatedMs = time.ms;
+  let updatedS = time.s;
+  let updatedM = time.m;
+  let updatedH = time.h;
 
-  const animate = (time) => {
-    if (previousTimeRef.current !== undefined) {
-      const deltaTime = time - previousTimeRef.current;
-
-      setCount(prevCount => (prevCount + deltaTime * 0.01) % 100);
+  const run = () => {
+    if (updatedM === 60) {
+      updatedH++;
+      updatedM = 0;
     }
-    previousTimeRef.current = time;
-    requestRef.current = requestAnimationFrame(animate);
+    if (updatedS === 60) {
+      updatedM++;
+      updatedS = 0;
+    }
+    if (updatedMs === 100) {
+      updatedS++;
+      updatedMs = 0;
+    }
+    updatedMs++;
+    return setTime({ ms: updatedMs, s: updatedS, m: updatedM, h: updatedH });
   };
 
-  useEffect(() => {
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-  }, []);
+  const start = () => {
+    run();
+    setStatus(1);
+    setInterv(setInterval(run, 10));
+  };
+
+  const stop = () => {
+    clearInterval(interv);
+    setStatus(2);
+  };
+
+  const reset = () => {
+    clearInterval(interv);
+    setStatus(0);
+    setTime({ ms: 0, s: 0, m: 0, h: 0 });
+  };
+
+  const resume = () => start();
 
   return (
     <div className="stopwatch">
-      <div className="stopwatch-screen">
-        {Math.round(count)}
-        {/* {' - '}
-        {watchState.seconds}
-        {' - '}
-        {watchState.milliSeconds} */}
-      </div>
-      {/* <div className="stopwatch-button">
-        <Button
-          onClick={() => { startTime(); }}
-        >
-          Start
-        </Button>
-        <Button
-          onClick={() => { stopTime(); }}
-        >
-          Stop
-        </Button>
-        <Button>Reset</Button>
-      </div> */}
+      <DisplayScreen
+        time={time}
+      />
+      <BtnComponents
+        status={status}
+        resume={resume}
+        reset={reset}
+        stop={stop}
+        start={start}
+      />
     </div>
   );
 }
-
-export default Stopwatch;
